@@ -35,10 +35,17 @@ const App = () => (
               <Route path="/admin" element={<AdminDashboard />} />
             </Route>
 
-            {/* Rotas Protegidas para Utilizadores Comuns */}
+            {/* --- MUDANÇA PARA DESENVOLVIMENTO --- */}
+
+            {/* Rota Protegida Original (Comentada Temporariamente) */}
+            {/*
             <Route element={<ProtectedRoute allowedRoles={['leitor', 'operador']} />}>
               <Route path="/dashboard" element={<UserDashboard />} />
             </Route>
+            */}
+
+            {/* ✅ ROTA PÚBLICA TEMPORÁRIA PARA DESENVOLVIMENTO */}
+            <Route path="/dashboard" element={<UserDashboard />} />
             
             <Route path="*" element={<NotFound />} />
           </Routes>

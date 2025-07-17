@@ -1,76 +1,39 @@
 // src/pages/UserDashboard.tsx
-import { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
 
-// Define a estrutura de um Produto para o TypeScript
-interface Produto {
-  id: number;
-  nome: string;
-  quantidade: number;
-  descricao: string;
-}
+import { Link } from 'react-router-dom';
+
+// 1. Criamos dados de exemplo estáticos. Não precisamos mais da interface 'Produto'.
+const produtosDeExemplo = [
+  { id: 1, nome: 'Seringa Descartável', descricao: 'Caixa com 100 unidades.', quantidade: 250 },
+  { id: 2, nome: 'Gaze Estéril', descricao: 'Pacote com 50 unidades.', quantidade: 150 },
+  { id: 3, nome: 'Luva Cirúrgica (Par)', descricao: 'Tamanho M, estéril.', quantidade: 300 },
+  { id: 4, nome: 'Álcool 70%', descricao: 'Frasco de 1 litro.', quantidade: 80 },
+];
 
 export default function UserDashboard() {
-  const { user, token, logout } = useAuth();
-  const [produtos, setProdutos] = useState<Produto[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (!token) return; // Não faz nada se não houver token
-
-    const fetchProdutos = async () => {
-      try {
-        const response = await fetch('http://localhost:3001/api/produtos', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-        if (response.status === 401 || response.status === 403) {
-          logout();
-          return;
-        }
-        if (!response.ok) {
-          throw new Error('Falha ao carregar os dados do estoque.');
-        }
-        const data = await response.json();
-        setProdutos(data);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProdutos();
-  }, [token, logout]);
-
-  if (loading) {
-    return <div className="text-center p-10">Carregando dados do estoque...</div>;
-  }
-
-  if (error) {
-    return <div className="text-center p-10 text-red-500">Erro: {error}</div>;
-  }
+  // 2. Removemos toda a lógica de 'useState', 'useEffect' e 'fetch'.
+  //    O componente agora é muito mais simples.
 
   return (
     <div className="container mx-auto p-6 bg-gray-50 min-h-screen">
       <header className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-gray-800">
-          Bem-vindo, <span className="text-blue-600">{user?.nome}</span>!
+          Bem-vindo, <span className="text-blue-600">(Nome do Utilizador)</span>!
         </h1>
-        <button
-          onClick={logout}
+        {/* Usamos um Link para simular o botão de sair em modo de desenvolvimento */}
+        <Link 
+          to="/login"
           className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-300"
         >
-          Sair
-        </button>
+          Sair (Voltar para Login)
+        </Link>
       </header>
       
       <p className="text-lg text-gray-600 mb-6">Este é o seu painel de visualização de estoque.</p>
 
+      {/* 3. Usamos os dados de exemplo para renderizar os cartões. */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {produtos.map((produto) => (
+        {produtosDeExemplo.map((produto) => (
           <div key={produto.id} className="bg-white border border-gray-200 p-5 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
             <h2 className="text-xl font-semibold text-gray-900 truncate">{produto.nome}</h2>
             <p className="text-gray-500 mt-1 h-12 overflow-hidden">{produto.descricao}</p>
